@@ -51,7 +51,7 @@ Tu es un lead développeur front-end React/TypeScript senior. Tu poses les fonda
 2. Réécris son contenu pour React/TypeScript. Ne traduis pas Angular → React ligne à ligne : pars des conventions front et écris ce qu'un agent IA doit absolument respecter quand il touche à `frontend/`. Même structure, même ton et longueur comparable à `django-drf-best-practices.instructions.md` ; frontmatter `applyTo` adapté au périmètre `frontend/**`.
 3. **Règle d'or : pas de duplication.** L'instruction renvoie vers le fichier de convention concerné (`frontend/docs/conventions/NN-….md`) et ne reprend que l'essentiel non négociable, plus 2 ou 3 exemples courts et conformes aux conventions (composant fonction typé, hook, CSS Modules, test). Deux sources de vérité qui divergent sont pires qu'une seule.
 4. Corrige les autres traces d'Angular trouvées en phase 0 (README, `PRE_COMMIT_ADR.md`, CI, autres instructions), en gardant le sens de chaque règle.
-5. Vérifie la cohérence de `adr-compliance-gate.instructions.md` et `django-drf-best-practices.instructions.md` avec le nouveau fichier : pas de contradiction, pas de recouvrement. Si `AGENTS.md` / `copilot-instructions.md` existe, ajoute-y le périmètre front dans le même style ; sinon, propose-en un.
+5. Vérifie la cohérence de `adr-compliance-gate.instructions.md` et `django-drf-best-practices.instructions.md` avec le nouveau fichier : pas de contradiction, pas de recouvrement. Si un `AGENTS.md` ou un `.github/copilot-instructions.md` existe à la racine, corriges-y les mentions d'Angular ; le périmètre front y sera traité en phase 5.
 6. Livrable : liste des fichiers modifiés avec un mot sur chaque changement, recherche `angular` vide (hors ADR relatant historiquement le changement). STOP.
 
 ## Phase 2 — Socle du projet React dans `frontend/`
@@ -82,15 +82,25 @@ Tu es un lead développeur front-end React/TypeScript senior. Tu poses les fonda
 5. Crée `frontend/docs/chantiers/README.md` : tableau de tous les chantiers (nom, sprint, taille, dépendances, statut, développeur — colonne vide), graphe des dépendances en Mermaid, et une proposition de répartition sprint par sprint pour 3 développeurs, avec pour objectif que personne ne modifie les mêmes fichiers au même moment. Les noms des développeurs restent vides : nous nous répartissons nous-mêmes.
 6. Aucun code pour les chantiers. STOP.
 
-## Phase 5 — Outillage et guide d'utilisation de l'IA pour l'équipe front
+## Phase 5 — Fichiers pour l'IA : `frontend/AGENTS.md` et `.github/instructions/`
 
-But : que trois développeurs, dans PyCharm ou VS Code, utilisent Copilot de la même façon sur ce projet, avec de bons résultats dès la première demande, et sans rien d'automatique (quota limité, usage manuel voulu).
+But : que trois développeurs, dans PyCharm ou VS Code, obtiennent de Copilot un code conforme aux conventions sans avoir à les lui rappeler. Deux livrables, rien d'autre : pas de prompts réutilisables, pas de guide séparé, pas de README.
 
-1. Complète le jeu d'instructions : si un périmètre du front n'est couvert par aucune `.instructions.md` (tests, styles, mocks, documentation…) alors que la convention correspondante contient des règles qu'un agent doit connaître, crée l'instruction avec un `applyTo` ciblé. Toujours sans dupliquer les conventions (règle d'or de la phase 1).
-2. Crée des prompts réutilisables pour les tâches récurrentes du projet, à l'emplacement standard de Copilot (`.github/prompts/*.prompt.md`). Au minimum : « démarrer un chantier » (à partir du fichier chantier, des maquettes et des US), « nouvel écran depuis une maquette », « ajouter un endpoint au contrat et au mock », « écrire les tests d'un écran », « revue de conformité aux conventions avant MR ». Chaque prompt dit quels fichiers attacher et quel résultat attendre. Vérifie que ces prompts sont invocables depuis PyCharm et VS Code ; sinon, dis-le et propose l'alternative.
-3. Rédige `frontend/docs/ia/README.md`, le guide de l'équipe : quelles instructions s'appliquent automatiquement et sur quels fichiers (hiérarchie des fichiers d'instructions), ce qui reste manuel, comment formuler une demande sur ce projet (quoi attacher : convention, maquette, US, fichier chantier, contrat d'API), un exemple de bonne et de mauvaise demande, ce qu'il faut vérifier après une génération (checklists de `11`), ce qu'on ne délègue pas à l'IA, et comment faire évoluer instructions et prompts quand une convention change. Court, actionnable, en français.
-4. Rédige `frontend/README.md` : prérequis, installation, scripts, structure, activation/désactivation du mode mock, liens vers conventions, chantiers et guide IA.
-5. Livrable : les fichiers ci-dessus, plus une démonstration : ce que produirait le prompt « démarrer un chantier » sur le premier chantier du sprint 1 (plan seulement, aucun code). STOP.
+1. `frontend/AGENTS.md` — la carte du projet pour le mode agent, écrite pour un agent IA qui arrive sans contexte. Dans cet ordre :
+   - le projet en 3 lignes ;
+   - la stack telle que posée en phase 2, avec renvoi vers `01` ;
+   - l'arborescence réelle avec, pour chaque dossier, ce qui y va et ce qui n'y va pas (`02`) ;
+   - les commandes à lancer et dans quel ordre (dev, vérifications, tests) ;
+   - le mode mock : comment il s'active et se désactive, où vit le contrat d'API, comment on ajoute un endpoint (`12`, phase 3) ;
+   - la règle des chantiers : renvoi vers `frontend/docs/chantiers/`, un chantier n'écrit que dans ses dossiers, le socle est partagé ;
+   - les règles essentielles par thème avec, pour chacune, le chapitre et l'identifiant source. Uniquement les règles « fragiles », celles que l'outillage ne vérifie pas. Pour tout ce que l'outillage vérifie, l'instruction est : lance la commande et corrige ;
+   - la definition of done, depuis `11` ;
+   - les interdits : commit, nouvelle dépendance ou décision structurante sans passer par `DECISIONS.md` ou un ADR, modification hors `frontend/`, code hors du chantier en cours ;
+   - la carte des fichiers d'instructions : quel `.instructions.md` s'applique à quel périmètre.
+   Moins de 150 lignes, impératif, concret, en français. Aucune convention recopiée : ce que le modèle doit toujours avoir en tête, plus des renvois précis (chapitre, identifiant, chemin).
+2. `.github/instructions/` — complète le jeu. Pour chaque périmètre de fichiers du front (composants et écrans, tests, styles, mocks et contrat d'API, documentation…) : s'il porte des règles fragiles imposées par le chapitre correspondant et qu'aucune instruction existante ne couvre, crée `<périmètre>.instructions.md` avec un `applyTo` ciblé ; sinon, tu ne crées rien. Même structure et même ton que `django-drf-best-practices.instructions.md`. Une règle vit dans un seul fichier : ce qui est dans `react-best-practices.instructions.md` ou dans `AGENTS.md` n'est pas repris ailleurs, un renvoi suffit.
+3. Prise en compte par les IDE : `frontend/AGENTS.md` est un `AGENTS.md` imbriqué, pas à la racine. VS Code et PyCharm ne le lisent que si l'option correspondante est activée (VS Code : `chat.useNestedAgentsMdFiles` ; PyCharm : réglage des personnalisations du plugin GitHub Copilot). Indique en tête du fichier, en deux lignes, ce que chaque développeur doit activer. S'il existe déjà un `AGENTS.md` ou un `.github/copilot-instructions.md` à la racine, `frontend/AGENTS.md` le complète sans le contredire ; tu proposes la ligne de renvoi à y ajouter, tu ne la mets pas toi-même.
+4. Livrable : les fichiers ci-dessus ; un tableau des `.instructions.md` (fichier, `applyTo`, chapitre source) ; la preuve que chaque renvoi (chemin, chapitre, identifiant, commande) existe ; recherche `angular` toujours vide. STOP.
 
 ---
 
