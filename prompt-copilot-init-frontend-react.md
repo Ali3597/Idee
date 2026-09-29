@@ -84,7 +84,7 @@ Tu es un lead développeur front-end React/TypeScript senior. Tu poses les fonda
 
 ## Phase 5 — Fichiers pour l'IA : `frontend/AGENTS.md` et `.github/instructions/`
 
-But : que trois développeurs, dans PyCharm ou VS Code, obtiennent de Copilot un code conforme aux conventions sans avoir à les lui rappeler. Deux livrables, rien d'autre : pas de prompts réutilisables, pas de guide séparé, pas de README.
+But : que trois développeurs obtiennent de l'IA un code conforme aux conventions sans avoir à les lui rappeler. Deux livrables, rien d'autre : pas de prompts réutilisables, pas de guide séparé, pas de README.
 
 1. `frontend/AGENTS.md` — la carte du projet pour le mode agent, écrite pour un agent IA qui arrive sans contexte. Dans cet ordre :
    - le projet en 3 lignes ;
@@ -99,7 +99,7 @@ But : que trois développeurs, dans PyCharm ou VS Code, obtiennent de Copilot un
    - la carte des fichiers d'instructions : quel `.instructions.md` s'applique à quel périmètre.
    Moins de 150 lignes, impératif, concret, en français. Aucune convention recopiée : ce que le modèle doit toujours avoir en tête, plus des renvois précis (chapitre, identifiant, chemin).
 2. `.github/instructions/` — complète le jeu. Pour chaque périmètre de fichiers du front (composants et écrans, tests, styles, mocks et contrat d'API, documentation…) : s'il porte des règles fragiles imposées par le chapitre correspondant et qu'aucune instruction existante ne couvre, crée `<périmètre>.instructions.md` avec un `applyTo` ciblé ; sinon, tu ne crées rien. Même structure et même ton que `django-drf-best-practices.instructions.md`. Une règle vit dans un seul fichier : ce qui est dans `react-best-practices.instructions.md` ou dans `AGENTS.md` n'est pas repris ailleurs, un renvoi suffit.
-3. Prise en compte par les IDE : `frontend/AGENTS.md` est un `AGENTS.md` imbriqué, pas à la racine. VS Code et PyCharm ne le lisent que si l'option correspondante est activée (VS Code : `chat.useNestedAgentsMdFiles` ; PyCharm : réglage des personnalisations du plugin GitHub Copilot). Indique en tête du fichier, en deux lignes, ce que chaque développeur doit activer. S'il existe déjà un `AGENTS.md` ou un `.github/copilot-instructions.md` à la racine, `frontend/AGENTS.md` le complète sans le contredire ; tu proposes la ligne de renvoi à y ajouter, tu ne la mets pas toi-même.
+3. S'il existe déjà un `AGENTS.md` ou un `.github/copilot-instructions.md` à la racine, `frontend/AGENTS.md` le complète sans le contredire ; tu proposes la ligne de renvoi à y ajouter, tu ne la mets pas toi-même.
 4. Livrable : les fichiers ci-dessus ; un tableau des `.instructions.md` (fichier, `applyTo`, chapitre source) ; la preuve que chaque renvoi (chemin, chapitre, identifiant, commande) existe ; recherche `angular` toujours vide. STOP.
 
 ---
